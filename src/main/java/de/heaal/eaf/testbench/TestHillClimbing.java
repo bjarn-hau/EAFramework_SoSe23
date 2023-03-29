@@ -29,6 +29,8 @@ import de.heaal.eaf.evaluation.ComparatorIndividual;
 import de.heaal.eaf.base.Individual;
 import de.heaal.eaf.evaluation.MinimizeFunctionComparator;
 import de.heaal.eaf.mutation.RandomMutation;
+import de.heaal.eaf.testbench.functions.SphereFunction2D;
+
 import java.util.function.Function;
 
 /**
@@ -42,12 +44,7 @@ public class TestHillClimbing {
         float[] max = {+5.12f, +5.12f};
         
         // Sphere Function n=2
-        Function<Individual,Float> evalSphereFunc2D = 
-                (ind) -> { 
-                    var x0 = ind.getGenome().array()[0];
-                    var x1 = ind.getGenome().array()[1];
-                    return x0*x0 + x1*x1;
-                };
+        Function<Individual,Float> evalSphereFunc2D = new SphereFunction2D();
         
         var comparator = new MinimizeFunctionComparator(evalSphereFunc2D);
         
