@@ -31,6 +31,8 @@ import de.heaal.eaf.base.Individual;
 import de.heaal.eaf.base.IndividualFactory;
 import de.heaal.eaf.mutation.Mutation;
 import de.heaal.eaf.mutation.MutationOptions;
+
+import java.util.Arrays;
 import java.util.Comparator;
 
 /**
@@ -38,9 +40,9 @@ import java.util.Comparator;
  * 
  * @author Christian Lins <christian.lins@haw-hamburg.de>
  */
-public class HillClimbingAlgorithm extends Algorithm {
+public class HillClimbingAlgorithm extends Algorithm<Individual> {
 
-    private final IndividualFactory indFac;
+    private final IndividualFactory<Individual> indFac;
     private final ComparatorIndividual terminationCriterion;
     
     public HillClimbingAlgorithm(float[] min, float[] max, 
@@ -57,6 +59,17 @@ public class HillClimbingAlgorithm extends Algorithm {
         super.nextGeneration();
 
         // HIER KÖNNTE DER ALGORITHMUS-LOOP STEHEN
+        Individual parent = population.get(0);
+        Individual child = parent.copy();
+
+        MutationOptions options = new MutationOptions();
+        options.put(MutationOptions.KEYS.MUTATION_PROBABILITY, 1.0f);
+
+        mutator.mutate(child, new MutationOptions());
+
+        if(comparator.compare(child, parent) > 0) {
+            population.set(0, child);
+        }
     }
   
     @Override
@@ -69,11 +82,16 @@ public class HillClimbingAlgorithm extends Algorithm {
     @Override
     public void run() {
         initialize(indFac, 1);
+        int generation = 0;
         
         while(!isTerminationCondition()) {
-            System.out.println("Next gen");
             nextGeneration();
+            System.out.printf("Generation %d: %s with fitness %f\n", generation,
+                    Arrays.toString(population.get(0).getGenome().array()), population.get(0).getCache());
+            generation++;
         }
-    }   
+        System.out.printf("Best individual: %s with fitness %f after %d generations",
+                Arrays.toString(population.get(0).getGenome().array()), population.get(0).getCache(), generation);
+    }
 
 }
