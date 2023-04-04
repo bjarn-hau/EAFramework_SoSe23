@@ -24,6 +24,7 @@
 
 package de.heaal.eaf.algorithm;
 
+import de.heaal.eaf.Tuple;
 import de.heaal.eaf.base.GenericIndividualFactory;
 import de.heaal.eaf.base.Algorithm;
 import de.heaal.eaf.evaluation.ComparatorIndividual;
@@ -31,6 +32,8 @@ import de.heaal.eaf.base.Individual;
 import de.heaal.eaf.base.IndividualFactory;
 import de.heaal.eaf.mutation.Mutation;
 import de.heaal.eaf.mutation.MutationOptions;
+
+import java.util.Arrays;
 import java.util.Comparator;
 
 /**
@@ -38,9 +41,9 @@ import java.util.Comparator;
  * 
  * @author Christian Lins <christian.lins@haw-hamburg.de>
  */
-public class HillClimbingAlgorithm extends Algorithm {
+public class HillClimbingAlgorithm extends Algorithm<Individual> {
 
-    private final IndividualFactory indFac;
+    private final IndividualFactory<Individual> indFac;
     private final ComparatorIndividual terminationCriterion;
     
     public HillClimbingAlgorithm(float[] min, float[] max, 
@@ -56,7 +59,17 @@ public class HillClimbingAlgorithm extends Algorithm {
     public void nextGeneration() {
         super.nextGeneration();
 
-        // HIER KÖNNTE DER ALGORITHMUS-LOOP STEHEN
+        Individual parent = population.get(0);
+        Individual child = parent.copy();
+
+        MutationOptions options = new MutationOptions();
+        options.put(MutationOptions.KEYS.MUTATION_PROBABILITY, 1.0f);
+
+        mutator.mutate(child, options);
+
+        if(comparator.compare(child, parent) > 0) {
+            population.set(0, child);
+        }
     }
   
     @Override
@@ -66,14 +79,28 @@ public class HillClimbingAlgorithm extends Algorithm {
         return comparator.compare(population.get(0), terminationCriterion) > 0;
     }
 
+    /**
+     * @return the best individual found
+     */
     @Override
-    public void run() {
+    public Tuple run() {
         initialize(indFac, 1);
-        
+        int generation = 0;
+
+        isTerminationCondition(); // To get the initial fitness value
+
+//        System.out.printf("Starting with %s with fitness %.12f\n",
+//                Arrays.toString(population.get(0).getGenome().array()), population.get(0).getCache());
+
         while(!isTerminationCondition()) {
-            System.out.println("Next gen");
             nextGeneration();
+            generation++;
+//            System.out.printf("Generation %d: %s with fitness %.12f\n", generation,
+//                    Arrays.toString(population.get(0).getGenome().array()), population.get(0).getCache());
         }
-    }   
+        System.out.printf("Best individual: %s with fitness %.12f after %d generations\n",
+                Arrays.toString(population.get(0).getGenome().array()), population.get(0).getCache(), generation);
+        return new Tuple(generation, population.get(0));
+    }
 
 }
