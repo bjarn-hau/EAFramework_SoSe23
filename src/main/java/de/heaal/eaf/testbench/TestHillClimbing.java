@@ -63,7 +63,7 @@ public class TestHillClimbing {
 //        algo.run();
         List<Tuple> bestIndividualsHill = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
-            bestIndividualsHill.add(algo.run());
+//            bestIndividualsHill.add(algo.run());
         }
 //        bestIndividualsHill.stream().map(Individual::getCache).mapToDouble(Float::doubleValue).average().ifPresent(System.out::println);
         // get the average of generations
@@ -84,7 +84,7 @@ public class TestHillClimbing {
                 comparator, new HillClimbingMutation(-5f, 5f), new ComparatorIndividual(0.001f));
         List<Tuple> bestIndividuals = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
-            bestIndividuals.add(algo2.run());
+//            bestIndividuals.add(algo2.run());
         }
 
         // get the average of the best individuals

@@ -24,8 +24,12 @@
 
 package de.heaal.eaf.base;
 
+import de.heaal.eaf.Tuple;
 import de.heaal.eaf.mutation.Mutation;
+
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -44,6 +48,8 @@ public abstract class Algorithm<T extends Individual> {
     protected Mutation mutator;
     protected Population<T> population;
     protected Random rng;
+    protected List<Individual> bestIndividualEachGeneration = new ArrayList<>();
+
     
     public Algorithm(Random rng) {
         this.rng = rng;
@@ -84,5 +90,5 @@ public abstract class Algorithm<T extends Individual> {
         population.nextGeneration();
     }
     
-    protected abstract void run();
+    public abstract List<Individual> run();
 }

@@ -33,8 +33,10 @@ import de.heaal.eaf.base.IndividualFactory;
 import de.heaal.eaf.mutation.Mutation;
 import de.heaal.eaf.mutation.MutationOptions;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Implementation of the Hill Climbing algorithm.
@@ -45,7 +47,7 @@ public class HillClimbingAlgorithm extends Algorithm<Individual> {
 
     private final IndividualFactory<Individual> indFac;
     private final ComparatorIndividual terminationCriterion;
-    
+
     public HillClimbingAlgorithm(float[] min, float[] max, 
             Comparator<Individual> comparator, Mutation mutator, 
             ComparatorIndividual terminationCriterion) 
@@ -70,6 +72,7 @@ public class HillClimbingAlgorithm extends Algorithm<Individual> {
         if(comparator.compare(child, parent) > 0) {
             population.set(0, child);
         }
+        this.bestIndividualEachGeneration.add(population.get(0));
     }
   
     @Override
@@ -83,16 +86,15 @@ public class HillClimbingAlgorithm extends Algorithm<Individual> {
      * @return the best individual found
      */
     @Override
-    public Tuple run() {
+    public List<Individual> run() {
         initialize(indFac, 1);
         int generation = 0;
-
         isTerminationCondition(); // To get the initial fitness value
 
 //        System.out.printf("Starting with %s with fitness %.12f\n",
 //                Arrays.toString(population.get(0).getGenome().array()), population.get(0).getCache());
 
-        while(!isTerminationCondition()) {
+        while (!isTerminationCondition()) {
             nextGeneration();
             generation++;
 //            System.out.printf("Generation %d: %s with fitness %.12f\n", generation,
@@ -100,7 +102,7 @@ public class HillClimbingAlgorithm extends Algorithm<Individual> {
         }
         System.out.printf("Best individual: %s with fitness %.12f after %d generations\n",
                 Arrays.toString(population.get(0).getGenome().array()), population.get(0).getCache(), generation);
-        return new Tuple(generation, population.get(0));
+        return this.bestIndividualEachGeneration;
     }
 
 }

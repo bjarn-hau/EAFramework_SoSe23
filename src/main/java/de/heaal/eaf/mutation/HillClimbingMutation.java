@@ -22,6 +22,12 @@ public class HillClimbingMutation implements Mutation {
 
     @Override
     public void mutate(Individual ind, MutationOptions opt) {
+
+        float p = opt.get(MutationOptions.KEYS.MUTATION_PROBABILITY, .1f);
+        if (p < rng.nextFloat()) {
+            return; // skips this individual
+        }
+
         int dimension = ind.getGenome().array().length;
         int toChange = opt.get(MutationOptions.KEYS.FEATURE_INDEX, rng.nextInt(dimension));
         float changeValueBy = rng.nextFloat(min, max);
