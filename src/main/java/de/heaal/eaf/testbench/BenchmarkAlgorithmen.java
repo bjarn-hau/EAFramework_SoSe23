@@ -50,33 +50,10 @@ public class BenchmarkAlgorithmen {
     }
 
 
-//    public static void benchMarkAlgorithm(Algorithm<Individual> one, Algorithm<Individual> two, File file) throws IOException {
-//        List<Individual> bestIndividualsAlgoOne = one.run();
-//        List<Individual> bestIndividualsAlgoTwo = two.run();
-//
-//        int max = Math.max(bestIndividualsAlgoOne.size(), bestIndividualsAlgoTwo.size());
-//
-//        // write the best individuals of the first algorithm to a file
-//        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-//            writer.write(String.format("Generation;%s;%s", one.getClass().getSimpleName(), two.getClass().getSimpleName()));
-//            writer.newLine();
-//            for (int i = 0; i < max; i++) {
-//                writer.write(i + ";");
-//
-//                printAlgo(bestIndividualsAlgoOne, writer, i);
-//
-//                printAlgo(bestIndividualsAlgoTwo, writer, i);
-//
-//                writer.newLine();
-//            }
-//        }
-//    }
-
     private static void printAlgo(List<Individual> bestIndividuals, BufferedWriter writer, int i) throws IOException {
         if (i < bestIndividuals.size()) {
             writer.write(String.format(Locale.GERMAN, "%.8f", bestIndividuals.get(i).getCache()) + ";");
         } else {
-//            writer.write(";");
             writer.write(String.format(Locale.GERMAN, "%.8f", bestIndividuals.get(bestIndividuals.size() - 1).getCache()) + ";");
         }
     }
