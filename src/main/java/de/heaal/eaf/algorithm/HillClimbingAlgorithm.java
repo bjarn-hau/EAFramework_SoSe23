@@ -107,4 +107,10 @@ public class HillClimbingAlgorithm extends Algorithm<Individual> {
         return this.bestIndividualEachGeneration;
     }
 
+    @Override
+    public String toString() {
+        return "HillClimbingAlgorithm{" +
+                "mutator=" + mutator.getClass().getSimpleName() +
+                '}';
+    }
 }

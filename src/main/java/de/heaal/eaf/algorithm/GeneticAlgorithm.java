@@ -10,7 +10,7 @@ import de.heaal.eaf.selection.SelectionUtils;
 import java.util.*;
 
 
-public class GenericAlgorithm extends Algorithm<Individual> {
+public class GeneticAlgorithm extends Algorithm<Individual> {
 
     private final IndividualFactory<Individual> individualFactory;
     private final ComparatorIndividual terminationCriterion;
@@ -20,7 +20,7 @@ public class GenericAlgorithm extends Algorithm<Individual> {
     private final int N_e;
 
 
-    public GenericAlgorithm(float[] min, float[] max,
+    public GeneticAlgorithm(float[] min, float[] max,
                             Comparator<Individual> comparator,
                             Mutation mutator,
                             ComparatorIndividual terminationCriterion,
@@ -95,4 +95,17 @@ public class GenericAlgorithm extends Algorithm<Individual> {
         this.bestIndividualEachGeneration.add(children.get(0));
 
     }
+
+    @Override
+    public String toString() {
+        return "GeneticAlgorithm{" +
+                combination.getClass().getSimpleName() +
+                ", N_e=" + N_e + ", " +
+                mutator.getClass().getSimpleName() +
+                ", prob=" + mutationOptions.get(MutationOptions.KEYS.MUTATION_PROBABILITY, 1.0f) +
+                ", " + comparator.toString() +
+                ", popSize=" + individuals +
+                '}';
+    }
+
 }

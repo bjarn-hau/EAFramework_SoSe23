@@ -1,6 +1,6 @@
 package de.heaal.eaf.testbench;
 
-import de.heaal.eaf.algorithm.GenericAlgorithm;
+import de.heaal.eaf.algorithm.GeneticAlgorithm;
 import de.heaal.eaf.base.Individual;
 import de.heaal.eaf.crossover.SinglePointCrossover;
 import de.heaal.eaf.evaluation.ComparatorIndividual;
@@ -20,7 +20,7 @@ public class TestGenericAlgorithm {
         Function<Individual, Float> evalSphereFunc2D = new SphereFunction2D();
 
         var comparator = new MinimizeFunctionComparator<>(evalSphereFunc2D);
-        GenericAlgorithm algo = new GenericAlgorithm(min, max,
+        GeneticAlgorithm algo = new GeneticAlgorithm(min, max,
                 comparator,
                 new HillClimbingMutation(-.5f, .5f),
                 new ComparatorIndividual(0.001f),
