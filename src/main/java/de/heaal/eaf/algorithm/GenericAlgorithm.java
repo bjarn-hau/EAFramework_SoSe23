@@ -1,9 +1,7 @@
 package de.heaal.eaf.algorithm;
 
-import de.heaal.eaf.Tuple;
 import de.heaal.eaf.base.*;
 import de.heaal.eaf.crossover.Combination;
-import de.heaal.eaf.crossover.SinglePointCrossover;
 import de.heaal.eaf.evaluation.ComparatorIndividual;
 import de.heaal.eaf.mutation.Mutation;
 import de.heaal.eaf.mutation.MutationOptions;
@@ -28,6 +26,7 @@ public class GenericAlgorithm extends Algorithm<Individual> {
                             ComparatorIndividual terminationCriterion,
                             Combination combination,
                             int individuals,
+                            float mutationProbability,
                             int N_e) {
         super(comparator, mutator);
         this.individualFactory = new GenericIndividualFactory(min, max);
@@ -37,7 +36,7 @@ public class GenericAlgorithm extends Algorithm<Individual> {
 
         this.combination.setRandom(new Random());
         this.mutationOptions = new MutationOptions();
-        mutationOptions.put(MutationOptions.KEYS.MUTATION_PROBABILITY, 0.05f);
+        mutationOptions.put(MutationOptions.KEYS.MUTATION_PROBABILITY, mutationProbability);
 
         this.N_e = N_e;
     }
@@ -51,16 +50,18 @@ public class GenericAlgorithm extends Algorithm<Individual> {
     @Override
     public List<Individual> run() {
         initialize(individualFactory, individuals);
+        bestIndividualEachGeneration.clear();
         int generation = 0;
 
-//        isTerminationCondition();
+        population.sort(comparator);
+        this.bestIndividualEachGeneration.add(population.get(0));
 
-        while (!isTerminationCondition() || generation <= 10.000) {
+        while (!isTerminationCondition() && generation < maximumGeneration) {
             nextGeneration();
             generation++;
         }
 
-        population.sort(comparator);
+        System.out.println("Best individual: " + bestIndividualEachGeneration.get(bestIndividualEachGeneration.size() - 1).getCache());
 
         return this.bestIndividualEachGeneration;
     }
@@ -71,12 +72,6 @@ public class GenericAlgorithm extends Algorithm<Individual> {
         Random random = new Random();
         Population<Individual> children = new Population<>(individuals);
 
-        population.sort(comparator); // calculates fitness and sorts them
-
-        this.bestIndividualEachGeneration.add(population.get(0));
-
-        population.forEach(individual -> System.out.println(individual.getCache()));
-
         for (int i = 0; i < this.N_e; i++) {
             children.add(population.get(i));
         }
@@ -84,20 +79,20 @@ public class GenericAlgorithm extends Algorithm<Individual> {
         while (children.size() < population.size()) {
 
             Individual parent1 = SelectionUtils.selectNormal(population, random, null);
-            Individual parent2 = SelectionUtils.selectNormal(population, random, null);
+            Individual parent2 = SelectionUtils.selectNormal(population, random, parent1);
 
             Individual child = combination.combine(new Individual[]{parent1, parent2});
 
-            System.out.println("Parent1 genome: " + Arrays.toString(parent1.getGenome().array()));
-            System.out.println("Parent2 genome: " + Arrays.toString(parent2.getGenome().array()));
-            System.out.println("Child genome: " + Arrays.toString(child.getGenome().array()));
+            mutator.mutate(child, this.mutationOptions);
 
             children.add(child);
         }
 
-        children.forEach(individual -> mutator.mutate(individual, this.mutationOptions));
-
         population = children;
+
+        children.sort(comparator);
+
+        this.bestIndividualEachGeneration.add(children.get(0));
 
     }
 }

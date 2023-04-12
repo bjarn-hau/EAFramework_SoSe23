@@ -26,7 +26,7 @@ public class MeanCombination implements Combination<Individual> {
         }
 
         for (int i = 0; i < childGenome.len(); i++) {
-            childGenome.array()[i] /= childGenome.len();
+            childGenome.array()[i] /= parents.length;
         }
 
         return new GenericIndividual(childGenome);

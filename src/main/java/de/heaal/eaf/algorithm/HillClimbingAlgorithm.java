@@ -88,13 +88,15 @@ public class HillClimbingAlgorithm extends Algorithm<Individual> {
     @Override
     public List<Individual> run() {
         initialize(indFac, 1);
+        bestIndividualEachGeneration.clear();
         int generation = 0;
         isTerminationCondition(); // To get the initial fitness value
+        bestIndividualEachGeneration.add(population.get(0));
 
 //        System.out.printf("Starting with %s with fitness %.12f\n",
 //                Arrays.toString(population.get(0).getGenome().array()), population.get(0).getCache());
 
-        while (!isTerminationCondition()) {
+        while (!isTerminationCondition() && generation < maximumGeneration) {
             nextGeneration();
             generation++;
 //            System.out.printf("Generation %d: %s with fitness %.12f\n", generation,

@@ -26,6 +26,7 @@ public class TestGenericAlgorithm {
                 new ComparatorIndividual(0.001f),
                 new SinglePointCrossover(),
                 10,
+                0.05f,
                 0);
         algo.run();
     }

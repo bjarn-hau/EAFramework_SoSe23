@@ -49,6 +49,7 @@ public abstract class Algorithm<T extends Individual> {
     protected Population<T> population;
     protected Random rng;
     protected List<Individual> bestIndividualEachGeneration = new ArrayList<>();
+    protected int maximumGeneration = 1000;
 
     
     public Algorithm(Random rng) {
@@ -58,9 +59,14 @@ public abstract class Algorithm<T extends Individual> {
     public Algorithm(Random rng, Comparator<T> comparator) {
         this(comparator, null, rng);
     }
-    
+
     public Algorithm(Comparator<T> comparator, Mutation mutator) {
         this(comparator, mutator, new Random());
+    }
+
+    public Algorithm(Comparator<T> comparator, Mutation mutator, int maximumGeneration) {
+        this(comparator, mutator, new Random());
+        this.maximumGeneration = maximumGeneration;
     }
     
     public Algorithm(Comparator<T> comparator, Mutation mutator, long seed) {
