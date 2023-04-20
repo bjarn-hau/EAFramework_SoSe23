@@ -51,7 +51,7 @@ public class DifferentialAlgorithm extends Algorithm<Individual> {
     protected void nextGeneration() {
         super.nextGeneration();
 
-        Individual u_i = nxull;
+        Individual u_i = null;
         Population u_is = new Population(population.size());
 
         for (Individual individual : population) {
