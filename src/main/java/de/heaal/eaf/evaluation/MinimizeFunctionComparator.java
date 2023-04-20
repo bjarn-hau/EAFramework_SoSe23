@@ -73,5 +73,9 @@ public class MinimizeFunctionComparator<T extends Individual> implements Compara
             return 0;
         }
     }
-    
+
+    @Override
+    public String toString() {
+        return evaluator.getClass().getSimpleName();
+    }
 }
