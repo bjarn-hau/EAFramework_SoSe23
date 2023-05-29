@@ -1,25 +1,25 @@
 package de.heaal.eaf.testbench;
 
+import de.heaal.eaf.algorithm.DifferentialAlgorithm;
 import de.heaal.eaf.algorithm.GeneticAlgorithm;
 import de.heaal.eaf.algorithm.HillClimbingAlgorithm;
 import de.heaal.eaf.base.Algorithm;
 import de.heaal.eaf.base.Individual;
+import de.heaal.eaf.crossover.DACrossover;
 import de.heaal.eaf.crossover.MeanCombination;
 import de.heaal.eaf.crossover.SinglePointCrossover;
 import de.heaal.eaf.evaluation.ComparatorIndividual;
 import de.heaal.eaf.evaluation.MinimizeFunctionComparator;
 import de.heaal.eaf.mutation.HillClimbingMutation;
+import de.heaal.eaf.mutation.RandomMutation;
 import de.heaal.eaf.testbench.functions.AckleyFunction;
+import de.heaal.eaf.testbench.functions.SinusFunction;
 import de.heaal.eaf.testbench.functions.SphereFunction2D;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.io.*;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.*;
 
 public class BenchmarkAlgorithmen {
 
@@ -59,6 +59,27 @@ public class BenchmarkAlgorithmen {
     }
 
     public static void main(String[] args) throws IOException {
+//        geneticVsHillClimbing();
+        differentialAlgorithmTest();
+    }
+
+
+    private static void differentialAlgorithmTest() throws IOException {
+        float[] min = {-20f, -20f, -20f, -20f};
+        float[] max = {+20f, +20f, +20f, +20f};
+        Map<Integer, Float> data = getMapFromCsvData(1000, new File("src/main/java/de/heaal/eaf/testbench/sensordata.csv"));
+        DifferentialAlgorithm differentialAlgorithm = new DifferentialAlgorithm(
+                min,
+                max,
+                new MinimizeFunctionComparator(new SinusFunction(data)),
+                new DACrossover(),
+                new ComparatorIndividual(0.001f),
+                100
+        );
+        differentialAlgorithm.run();
+    }
+
+    private static void geneticVsHillClimbing() throws IOException {
         float[] min = {-5.12f, -5.12f};
         float[] max = {+5.12f, +5.12f};
         GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(
@@ -163,8 +184,27 @@ public class BenchmarkAlgorithmen {
 
 
         benchmarkAlgorithms(new Algorithm[]{geneticAlgorithm, geneticAlgorithm2, geneticAlgorithm3, geneticAlgorithm4, geneticAlgorithm5, geneticAlgorithm6,
-                hillClimbingAlgorithm, hillClimbingAlgorithm2},
+                        hillClimbingAlgorithm, hillClimbingAlgorithm2},
                 new File("src/main/java/de/heaal/eaf/testbench/all.csv"));
     }
 
+    private static Map<Integer, Float> getMapFromCsvData(int lines, File file) throws IOException {
+        Map<Integer, Float> map = new HashMap<>();
+        NumberFormat numberFormat = NumberFormat.getInstance(Locale.GERMAN);
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+
+            String[] split = reader.readLine().split(";"); // reads header from csv
+            split = reader.readLine().split(";");
+//            int j = numberFormat.parse(split[0]).intValue();
+//            map.put(j, numberFormat.parse(split[split.length - 1]).floatValue());
+            for (int i = 1; i <= lines; i++) {
+                split = reader.readLine().split(";");
+                map.put(i, numberFormat.parse(split[split.length - 1]).floatValue());
+            }
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        return map;
+    }
 }

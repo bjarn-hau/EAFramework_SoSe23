@@ -49,7 +49,7 @@ public abstract class Algorithm<T extends Individual> {
     protected Population<T> population;
     protected Random rng;
     protected List<Individual> bestIndividualEachGeneration = new ArrayList<>();
-    protected int maximumGeneration = 1000;
+    protected int maximumGeneration = 100_000;
 
     
     public Algorithm(Random rng) {
