@@ -17,7 +17,6 @@ public class MeanCombination implements Combination<Individual> {
 
     @Override
     public Individual combine(Individual[] parents) {
-        assert parents.length == 2;
 
         VecN childGenome = new VecN(parents[0].getGenome().len());
 
